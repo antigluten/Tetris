@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A7BADD0427822F8E004F8A47 /* TetrisGameModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7BADD0327822F8E004F8A47 /* TetrisGameModel.swift */; };
 		A7EF597A2781A97B001B99FE /* TetrisApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7EF59792781A97B001B99FE /* TetrisApp.swift */; };
 		A7EF597C2781A97B001B99FE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7EF597B2781A97B001B99FE /* ContentView.swift */; };
 		A7EF597E2781A97C001B99FE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A7EF597D2781A97C001B99FE /* Assets.xcassets */; };
@@ -17,6 +18,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		A7BADD0327822F8E004F8A47 /* TetrisGameModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TetrisGameModel.swift; sourceTree = "<group>"; };
 		A7EF59762781A97B001B99FE /* Tetris.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tetris.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A7EF59792781A97B001B99FE /* TetrisApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TetrisApp.swift; sourceTree = "<group>"; };
 		A7EF597B2781A97B001B99FE /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -38,6 +40,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A7BADD0227822F7C004F8A47 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				A7BADD0327822F8E004F8A47 /* TetrisGameModel.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		A7EF596D2781A97B001B99FE = {
 			isa = PBXGroup;
 			children = (
@@ -57,6 +67,7 @@
 		A7EF59782781A97B001B99FE /* Tetris */ = {
 			isa = PBXGroup;
 			children = (
+				A7BADD0227822F7C004F8A47 /* Model */,
 				A7EF598D2781ACC8001B99FE /* View */,
 				A7EF598A2781AC1A001B99FE /* Extensions */,
 				A7EF59872781AA6C001B99FE /* ViewModel */,
@@ -172,6 +183,7 @@
 			files = (
 				A7EF597C2781A97B001B99FE /* ContentView.swift in Sources */,
 				A7EF598F2781ACDA001B99FE /* TetrisGameView.swift in Sources */,
+				A7BADD0427822F8E004F8A47 /* TetrisGameModel.swift in Sources */,
 				A7EF598C2781AC29001B99FE /* Color.swift in Sources */,
 				A7EF597A2781A97B001B99FE /* TetrisApp.swift in Sources */,
 				A7EF59892781AA7F001B99FE /* TetrisGameViewModel.swift in Sources */,
