@@ -17,12 +17,8 @@ class TetrisGameModel: ObservableObject {
     var speed: Double
     
     var shadow: Tetromino? {
-        guard var lastShadow = tetromino else {
-            return nil
-        }
-        
+        guard var lastShadow = tetromino else { return nil }
         var testShadow = lastShadow
-        
         while(isValidTetromino(testTetromino: testShadow)) {
             lastShadow = testShadow
             testShadow = lastShadow.moveBy(row: -1, column: 0)
@@ -56,7 +52,6 @@ class TetrisGameModel: ObservableObject {
             return
         }
         
-        
         // Spawn a new block if we need to
         guard tetromino != nil else {
             print("Spawning new Tetromino")
@@ -70,7 +65,7 @@ class TetrisGameModel: ObservableObject {
         
         // See about moving block down
         if moveTetrominoDown() {
-            print("Moving Tetromino Down")
+            print("Moving Tetromino down")
             return
         }
         
@@ -79,36 +74,8 @@ class TetrisGameModel: ObservableObject {
         placeTetromino()
     }
     
-    func moveTetromino(rowOffset: Int, columnOffset: Int) -> Bool {
-        guard let currentTetromino = tetromino else { return false }
-        
-        // See about moving block down
-        let newTetromino = currentTetromino.moveBy(row: rowOffset, column: columnOffset)
-        if isValidTetromino(testTetromino: newTetromino) {
-            tetromino = newTetromino
-            return true
-        }
-        
-        return false
-    }
-    
-    func rotateTetromino(clockwise: Bool) {
-            guard let currentTetromino = tetromino else { return }
-            
-            let newTetrominoBase = currentTetromino.rotate(clockwise: clockwise)
-            let kicks = currentTetromino.getKicks(clockwise: clockwise)
-            
-            for kick in kicks {
-                let newTetromino = newTetrominoBase.moveBy(row: kick.row, column: kick.column)
-                if isValidTetromino(testTetromino: newTetromino) {
-                    tetromino = newTetromino
-                    return
-                }
-            }
-    }
-    
     func dropTetromino() {
-        while (moveTetrominoDown()) { }
+        while(moveTetrominoDown()) { }
     }
     
     func moveTetrominoRight() -> Bool {
@@ -121,6 +88,33 @@ class TetrisGameModel: ObservableObject {
     
     func moveTetrominoDown() -> Bool {
         return moveTetromino(rowOffset: -1, columnOffset: 0)
+    }
+    
+    func moveTetromino(rowOffset: Int, columnOffset: Int) -> Bool {
+        guard let currentTetromino = tetromino else { return false }
+        
+        let newTetromino = currentTetromino.moveBy(row: rowOffset, column: columnOffset)
+        if isValidTetromino(testTetromino: newTetromino) {
+            tetromino = newTetromino
+            return true
+        }
+        
+        return false
+    }
+    
+    func rotateTetromino(clockwise: Bool) {
+        guard let currentTetromino = tetromino else { return }
+        
+        let newTetrominoBase = currentTetromino.rotate(clockwise: clockwise)
+        let kicks = currentTetromino.getKicks(clockwise: clockwise)
+        
+        for kick in kicks {
+            let newTetromino = newTetrominoBase.moveBy(row: kick.row, column: kick.column)
+            if isValidTetromino(testTetromino: newTetromino) {
+                tetromino = newTetromino
+                return
+            }
+        }
     }
     
     func isValidTetromino(testTetromino: Tetromino) -> Bool {
@@ -156,17 +150,17 @@ class TetrisGameModel: ObservableObject {
     
     func clearLines() -> Bool {
         var newBoard: [[TetrisGameBlock?]] = Array(repeating: Array(repeating: nil, count: numRows), count: numColumns)
-        var boardUpdated: Bool = false
+        var boardUpdated = false
         var nextRowToCopy = 0
         
-        for row in 0...numRows - 1 {
+        for row in 0...numRows-1 {
             var clearLine = true
-            for column in 0...numColumns - 1 {
+            for column in 0...numColumns-1 {
                 clearLine = clearLine && gameBoard[column][row] != nil
             }
             
             if !clearLine {
-                for column in 0...numColumns - 1 {
+                for column in 0...numColumns-1 {
                     newBoard[column][nextRowToCopy] = gameBoard[column][row]
                 }
                 nextRowToCopy += 1
@@ -177,12 +171,10 @@ class TetrisGameModel: ObservableObject {
         if boardUpdated {
             gameBoard = newBoard
         }
-        
         return boardUpdated
     }
     
 }
-
 
 struct TetrisGameBlock {
     var blockType: BlockType
@@ -198,7 +190,7 @@ struct Tetromino {
     var rotation: Int
     
     var blocks: [BlockLocation] {
-        return Tetromino.getBlocks(blockType: blockType)
+        return Tetromino.getBlocks(blockType: blockType, rotation: rotation)
     }
     
     func moveBy(row: Int, column: Int) -> Tetromino {
@@ -273,40 +265,40 @@ struct Tetromino {
     }
     
     static func getKicks(blockType: BlockType, rotation: Int, clockwise: Bool) -> [BlockLocation] {
-            let rotationCount = getAllBlocks(blockType: blockType).count
-            
-            var index = rotation % rotationCount
-            if index < 0 { index += rotationCount }
-            
-            var kicks = getAllKicks(blockType: blockType)[index]
-            if !clockwise {
-                var counterKicks: [BlockLocation] = []
-                for kick in kicks {
-                    counterKicks.append(BlockLocation(row: -1 * kick.row, column: -1 * kick.column))
-                }
-                kicks = counterKicks
-            }
-            return kicks
-        }
+        let rotationCount = getAllBlocks(blockType: blockType).count
         
-        static func getAllKicks(blockType: BlockType) -> [[BlockLocation]] {
-            switch blockType {
-            case .o:
-                return [[BlockLocation(row: 0, column: 0)]]
-            case .i:
-                return [[BlockLocation(row: 0, column: 0), BlockLocation(row: 0, column: -2), BlockLocation(row: 0, column: 1), BlockLocation(row: -1, column: -2), BlockLocation(row: 2, column: -1)],
-                        [BlockLocation(row: 0, column: 0), BlockLocation(row: 0, column: -1), BlockLocation(row: 0, column: 2), BlockLocation(row: 2, column: -1), BlockLocation(row: -1, column: 2)],
-                        [BlockLocation(row: 0, column: 0), BlockLocation(row: 0, column: 2), BlockLocation(row: 0, column: -1), BlockLocation(row: 1, column: 2), BlockLocation(row: -2, column: -1)],
-                        [BlockLocation(row: 0, column: 0), BlockLocation(row: 0, column: 1), BlockLocation(row: 0, column: -2), BlockLocation(row: -2, column: 1), BlockLocation(row: 1, column: -2)]
-                ]
-            case .j, .l, .s, .z, .t:
-                return [[BlockLocation(row: 0, column: 0), BlockLocation(row: 0, column: -1), BlockLocation(row: 1, column: -1), BlockLocation(row: 0, column: -2), BlockLocation(row: -2, column: -1)],
-                        [BlockLocation(row: 0, column: 0), BlockLocation(row: 0, column: 1), BlockLocation(row: -1, column: 1), BlockLocation(row: 2, column: 0), BlockLocation(row: 1, column: 2)],
-                        [BlockLocation(row: 0, column: 0), BlockLocation(row: 0, column: 1), BlockLocation(row: 1, column: 1), BlockLocation(row: -2, column: 0), BlockLocation(row: -2, column: 1)],
-                        [BlockLocation(row: 0, column: 0), BlockLocation(row: 0, column: -1), BlockLocation(row: -1, column: -1), BlockLocation(row: 2, column: 0), BlockLocation(row: 2, column: -1)]
-                ]
+        var index = rotation % rotationCount
+        if index < 0 { index += rotationCount }
+        
+        var kicks = getAllKicks(blockType: blockType)[index]
+        if !clockwise {
+            var counterKicks: [BlockLocation] = []
+            for kick in kicks {
+                counterKicks.append(BlockLocation(row: -1 * kick.row, column: -1 * kick.column))
             }
+            kicks = counterKicks
         }
+        return kicks
+    }
+    
+    static func getAllKicks(blockType: BlockType) -> [[BlockLocation]] {
+        switch blockType {
+        case .o:
+            return [[BlockLocation(row: 0, column: 0)]]
+        case .i:
+            return [[BlockLocation(row: 0, column: 0), BlockLocation(row: 0, column: -2), BlockLocation(row: 0, column: 1), BlockLocation(row: -1, column: -2), BlockLocation(row: 2, column: -1)],
+                    [BlockLocation(row: 0, column: 0), BlockLocation(row: 0, column: -1), BlockLocation(row: 0, column: 2), BlockLocation(row: 2, column: -1), BlockLocation(row: -1, column: 2)],
+                    [BlockLocation(row: 0, column: 0), BlockLocation(row: 0, column: 2), BlockLocation(row: 0, column: -1), BlockLocation(row: 1, column: 2), BlockLocation(row: -2, column: -1)],
+                    [BlockLocation(row: 0, column: 0), BlockLocation(row: 0, column: 1), BlockLocation(row: 0, column: -2), BlockLocation(row: -2, column: 1), BlockLocation(row: 1, column: -2)]
+            ]
+        case .j, .l, .s, .z, .t:
+            return [[BlockLocation(row: 0, column: 0), BlockLocation(row: 0, column: -1), BlockLocation(row: 1, column: -1), BlockLocation(row: 0, column: -2), BlockLocation(row: -2, column: -1)],
+                    [BlockLocation(row: 0, column: 0), BlockLocation(row: 0, column: 1), BlockLocation(row: -1, column: 1), BlockLocation(row: 2, column: 0), BlockLocation(row: 1, column: 2)],
+                    [BlockLocation(row: 0, column: 0), BlockLocation(row: 0, column: 1), BlockLocation(row: 1, column: 1), BlockLocation(row: -2, column: 0), BlockLocation(row: -2, column: 1)],
+                    [BlockLocation(row: 0, column: 0), BlockLocation(row: 0, column: -1), BlockLocation(row: -1, column: -1), BlockLocation(row: 2, column: 0), BlockLocation(row: 2, column: -1)]
+            ]
+        }
+    }
 }
 
 struct BlockLocation {
