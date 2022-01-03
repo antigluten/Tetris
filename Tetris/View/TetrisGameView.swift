@@ -15,6 +15,7 @@ struct TetrisGameView: View {
             self.drawBoard(boundingRect: geometry.size)
         }
         .gesture(tetrisGame.getMoveGesture())
+        .gesture(tetrisGame.getRotateGesture())
     }
     
     func drawBoard(boundingRect: CGSize) -> some View {
@@ -33,7 +34,7 @@ struct TetrisGameView: View {
                     // TODO: redesign x and y coordinate systems
                     // I consider yOffset here as useless chank of code, maybe
                     let x = xOffset + blockSize * CGFloat(column)
-                    let y = boundingRect.height - blockSize * CGFloat(row + 1)
+                    let y = boundingRect.height - yOffset - blockSize * CGFloat(row + 1)
                     
 //                    let x = xOffset + blockSize * CGFloat(column)
 //                    let y = boundingRect.height - yOffset - blockSize * CGFloat(row + 1)
@@ -43,10 +44,7 @@ struct TetrisGameView: View {
                     path.addRect(rect)
                 }
                 .fill(gameBoard[column][row].color)
-                .border(Color.white)
-                .onTapGesture {
-                    self.tetrisGame.squareClicked(row: row, column: column)
-                }
+            
                 
             }
         }
